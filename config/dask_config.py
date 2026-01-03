@@ -4,7 +4,7 @@ def start_dask():
     cluster = LocalCluster(
         n_workers=2,
         threads_per_worker=2,
-        memory_limit='1GB',
+        memory_limit='10GB',
         dashboard_address=':8790'
     )
     return Client(cluster)
