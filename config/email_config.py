@@ -1,36 +1,35 @@
-from email.mime import message
-from http import server
+from typing import Dict
+from email.message import EmailMessage
 import smtplib
-from email.mime.text import MIMEText
 
-def send_email(receiver, subject, body):
-    print("Starting email script...")
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 465
+EMAIL = "tanishagupta231@gmail.com"
+PASSWORD = "yrym ydng oplq muua"
 
-    sender = "tanishagupta231@gmail.com"
-    receiver = receiver
-    password = "yrym ydng oplq muua"
 
-    print("Creating email content...")
+def send_anomaly_email(to_email: str, anomaly: Dict):
+    subject = "🚨 Log Anomaly Detected"
 
-    # Create the email content
-    message = MIMEText(body)
-    message['Subject'] = subject
-    message['From'] = sender
-    message['To'] = receiver
-    print("Connecting to Gmail SMTP server...")
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    
-    print("Starting TLS encryption...")
-    server.starttls()  # encrypt connection
+    body = f"""
+🚨 Anomaly Detected in System Logs
 
-    print("Logging in...")
-    server.login(sender, password)
-    print("Sending email...")
-    server.sendmail(sender, receiver, message.as_string())  # IMPORTANT
+Time Window : {anomaly['timestamp']}
+Error Count : {anomaly['error_count']}
+Z-Score     : {round(anomaly['z_score'], 2)}
 
-    print("Email sent successfully!")
+Please investigate immediately.
 
-    print("Closing server connection...")
-    server.quit()
+Regards,
+Log Monitoring System
+"""
 
-    print("Program finished.")
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = EMAIL
+    msg["To"] = to_email
+    msg.set_content(body)
+
+    with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
+        server.login(EMAIL, PASSWORD)
+        server.send_message(msg)

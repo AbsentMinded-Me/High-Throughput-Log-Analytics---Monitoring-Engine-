@@ -1,5 +1,5 @@
 LOG_SCHEMA={
-    "timestamp": "string",
+    "timestamp": "datetime",
     "level": "string",
     "service": "string",
     "message": "string"
